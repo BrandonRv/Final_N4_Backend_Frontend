@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bitacora;
 use App\Models\Persona;
 use App\Models\Rol;
 use App\Models\Usuario;
@@ -91,8 +92,19 @@ class UsuarioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Usuario $usuario)
+    public function destroy($id)
     {
-        //
+        $usuario_delete = Usuario::find($id);
+        if (Usuario::where('id', $id)->exists() === false) {
+            return response()->json([
+                'message' => 'No existe un Rol con el id N° ' . $id,
+            ], 404);
+        } else {
+            Bitacora::where('id_usuario', $id)->update(['id_usuario' => null]);
+            $usuario_delete->delete();
+            return response()->json([
+                'message' => 'El Usuario: ' . $usuario_delete->usuario . ' ha sido eliminado Correctamente.'
+            ], 200);
+        }
     }
 }

@@ -20,7 +20,7 @@ export function Update() {
     // funcion para editar Datos Usuario con fetch
     const updateUser = async () => {
 
-        const res = await fetch(`http://127.0.0.1:8002/api/update/${id_user}`,
+        const res = await fetch(`http://127.0.0.1:8000/api/update/${id_user}`,
             {
                 method: "PUT",
                 headers: {
@@ -31,7 +31,7 @@ export function Update() {
             })
         const data = await res.json();
 
-        if (res.status == 500) {
+        if (res.status == 429) {
             setRespuesta("Seccion Caducada");
             setTimeout(() => {
                 setRespuesta('');

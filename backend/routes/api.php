@@ -57,6 +57,7 @@ Route::delete('/roles/{id}', [RolController::class, 'destroy']);
 
 Route::get('/usuario', [UsuarioController::class, 'index']);
 Route::get('/usuario/{id}', [UsuarioController::class, 'show']);
+Route::delete('/usuario/{id}', [UsuarioController::class, 'destroy']);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //-------------------------------- Rutas Bitacoras -----------------------------------//
@@ -71,5 +72,4 @@ Route::get('/bitacoras', [BitacoraController::class, 'index']);
 Route::get('/paginas', [PaginaController::class, 'index']);
 
 });
-
 

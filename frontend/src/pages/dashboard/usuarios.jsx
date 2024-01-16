@@ -9,21 +9,64 @@ import {
     MenuHandler,
     Switch,
 } from "@material-tailwind/react";
+import Cookies from "js-cookie";
 import { useManagementContext } from "../../context/ManagementProvider";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
 export function Usuarios() {
 
-    const { users } = useManagementContext(); //users
+    const { users, roles, usuario } = useManagementContext(); //users
     const rol = parseInt(sessionStorage.getItem("rol"));
-    const [showModal, setShowModal] = useState(0);
+    const [modalDelete, setModalDelete] = useState(false);
     const [newModal, setNewModal] = useState(false);
+    const [rolAsign, setRolAsign] = useState("");
+    const [id_rol, setId_rol] = useState(null);
+    const usuario_creacion = usuario?.usuario;
+    const usuario_modificacion = usuario?.usuario;
+    const [primer_nombre, setPrimer_nombre] = useState("");
+    const [segundo_nombre, setSegundo_nombre] = useState("");
+    const [primer_apellido, setPrimer_apellido] = useState("");
+    const [segundo_apellido, setSegundo_apellido] = useState("");
+    const [email, setEmail] = useState("");
+    const [respuesta, setRespuesta] = useState("");
+    const [username, setUsername] = useState("")
+    //const tokenn = Cookies.get("token");
 
+    // funcion para editar Rol con fetch
+    const eliminarUsuario = async () => {
+
+        const res = await fetch(`http://127.0.0.1:8000/api/usuario/${parseInt(id_rol)}`, { method: "DELETE", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+        const data = await res.json();
+        setRespuesta(data);
+        setTimeout(() => {
+            setRespuesta('');
+        }, 2000);
+    }
+
+    // funcion para nuevo Rol con fetch
+    const nuevoUsuario = async () => {
+
+        const res = await fetch("http://127.0.0.1:8000/api/register",
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${Cookies.get("token")}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ usuario: username, email, id_rol, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, usuario_creacion, usuario_modificacion }),
+            })
+        const data = await res.json();
+        setRespuesta(data);
+        //setRespuesta(data.usuario[0]);
+        setTimeout(() => {
+            setRespuesta('');
+        }, 2000);
+    }
 
     return (
         <>
             <div className="h-16 w-11/12  flex justify-between items-center">
-                <p className="truncate  text-xl md:text-2xl font-medium pr-4"></p>
+                <p className="truncate  text-xl md:text-2xl font-medium pr-4"></p><p className="text-center text-green-600 text-sm">{respuesta?.message && <p>{respuesta?.message}</p>}</p>
                 <form>
                     {rol == 1 ? (
                         <Button
@@ -33,18 +76,49 @@ export function Usuarios() {
                             Crear Nuevo Usuario
                         </Button>
                     ) : null}
+                    {modalDelete ? (
+                        <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="relative w-full max-w-lg max-h-full bg-white rounded-lg shadow dark:bg-gray-700 pb-6 pt-4 lg:pb-6 lg:pt-4 ">
+                                    <button type="button" onClick={() => setModalDelete(false)} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                        </svg>
+                                    </button>
+                                    <h3 id="titutlo" className="pb-2 mb-4 border-b-2 text-xl font-medium text-gray-900 dark:text-white px-6 lg:px-8">Confirme su Eliminación</h3>
+                                    <form className="space-y-6 relative px-6 lg:px-8">
+                                        <label className="block text-lg font-medium text-gray-900 dark:text-white">
+                                            ¿Está seguro de que desea Eliminar el Usuario: {username}<span className="font-extrabold"> </span>?
+                                        </label>
+                                        <div id="btn_modal" className="flex justify-end gap-2 mt-4">
+                                            <button
+                                                type="button"
+                                                className="w-fit text-white bg-gray-600 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                                                onClick={() => setModalDelete(false)}
+                                            >NO</button>
+                                            <button
+                                                type="button"
+                                                className="w-fit text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                                                onClick={() => {
+                                                    eliminarUsuario();
+                                                    setModalDelete(false);
+                                                }}
+                                            >SI</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                        </>
+                    ) : null}
                     {newModal ? (
                         <>
-                            <div
-                                className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-                            >
-                                <div className="relative w-auto my-6 mx-auto max-w-sm">
-                                    {/*content*/}
-                                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                        {/*header*/}
-                                        <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="relative w-auto my-6 mx-auto bg-white dark:bg-gray-800 max-w-sm border-0 rounded-2xl shadow-lg">
+                                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none">
+                                        <div className="flex items-start justify-between text-gray-400 bg-transparent p-5 border-b border-solid border-slate-200 rounded-t">
                                             <h3 className="text-3xl font-semibold">
-                                                Crear Nuevo
+                                                Crear Nuevo Usuario
                                             </h3>
                                             <button
                                                 className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -55,70 +129,105 @@ export function Usuarios() {
                                                 </span>
                                             </button>
                                         </div>
-                                        {/*body*/}
                                         <div className="relative p-6 flex flex-col gap-6">
-                                            <div className="flex items-center justify-between">
-                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Persona :</span>
-                                                {/* <input className="" type="text" name="id_persona" required /> */}
-                                                <select name="id_persona" required>
-                                                    <option value="" disabled selected>Selecione ID</option>
-                                                    {/* {persona.map((e, index) => (
-                                                        <option key={index} value={e.id}>{e.id}</option>
-                                                    ))} */}
 
-                                                </select>
+                                            <div className="flex items-center justify-between">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Usuario o Alias :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={username}
+                                                    onChange={(e) => setUsername(e.target.value)}
+                                                    required />
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Usuario :</span>
-                                                <input className="" type="text" required />
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Email :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="email"
+                                                    defaultValue={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                    required />
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Clave :</span>
-                                                <input className="" type="password" required />
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Primer Nombre :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={primer_nombre}
+                                                    onChange={(e) => setPrimer_nombre(e.target.value)}
+                                                    required />
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Fecha de Nacimiento :</span>
-                                                <input className="" type="date" required />
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Segundo Nombre :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={segundo_nombre}
+                                                    onChange={(e) => setSegundo_nombre(e.target.value)}
+                                                    required />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Primer Apellido :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={primer_apellido}
+                                                    onChange={(e) => setPrimer_apellido(e.target.value)}
+                                                    required />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Segundo Apellido :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={segundo_apellido}
+                                                    onChange={(e) => setSegundo_apellido(e.target.value)}
+                                                    required />
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Rol :</span>
-                                                {/* <input className="" type="number" name="id_rol" required /> */}
-                                                <select name="id_rol" required>
-                                                    <option value="" disabled selected>Selecione ID</option>
-                                                    {/* {rol.map((e, index) => (
-                                                        <option key={index} value={e.id}>{e.rol}</option>
-                                                    ))} */}
-
+                                                <select
+                                                    className="p-2 rounded-lg border border-gray-800"
+                                                    defaultValue={rolAsign}
+                                                    onChange={(e) => {
+                                                        const selectedRol = roles.find((rol) => rol.rol === e.target.value);
+                                                        setRolAsign(selectedRol ? selectedRol.rol : null);
+                                                        setId_rol(selectedRol ? selectedRol.id : null);
+                                                    }}
+                                                >
+                                                    <option>Seleccione un Rol</option>
+                                                    {roles.map(({ rol: rolValue }, key) => (
+                                                        <option key={key} defaultValue={rolAsign}>
+                                                            {
+                                                                rolValue
+                                                            }
+                                                        </option>
+                                                    ))}
+                                                    <option>DEJAR SIN ROL</option>
                                                 </select>
                                             </div>
-                                            <div className="flex gap-4 justify-between">
-                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Estado del rol :</span>
-                                                <label className="relative inline-flex items-center mb-4 cursor-pointer">
-
-                                                    <input type="checkbox" value="1" name="habilitado" className="sr-only peer" />
-                                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-
-                                                </label>
-                                            </div>
-
                                         </div>
-                                        {/*footer*/}
-                                        <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                                            <button
-                                                className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                                type="button"
-                                                onClick={() => setNewModal(false)}
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                                type="submit"
-                                            // onClick={() => setShowModal(false)}
-                                            >
-                                                Create
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <p className="text-center mt-4 text-green-600 text-sm">{respuesta?.message && <p>{respuesta?.rolname + " " + respuesta?.message}</p>}</p>
+                                    <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                                        <button
+                                            className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            type="button"
+                                            onClick={() => setNewModal(false)}
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <Button
+                                            className="bg-emerald-500 dark:bg-gray-500 text-gray-900 dark:text-gray-200 active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            type="submit"
+                                            onClick={() => {
+                                                nuevoUsuario();
+                                                setNewModal(false)
+                                            }}
+                                        >
+                                            Crear
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +235,7 @@ export function Usuarios() {
                         </>
                     ) : null}
                 </form>
-            </div>
+            </div >
             <section className=" h-[85%] flex w-11/12  justify-start items-start">
                 <div className=" w-full h-full p-4">
                     <div className="relative  h-full overflow-auto shadow-md sm:rounded-lg">
@@ -218,7 +327,7 @@ export function Usuarios() {
                                             {e.usuario_modificacion}
                                         </Table.Cell>
                                         {rol == 1 ? (
-                                        <Table.Cell>
+                                            <Table.Cell>
                                                 <Menu placement="left-start">
                                                     <MenuHandler>
                                                         <IconButton size="sm" variant="text" color="blue-gray">
@@ -231,25 +340,16 @@ export function Usuarios() {
                                                     </MenuHandler>
                                                     <MenuList className="dark:bg-gray-800">
                                                         <MenuItem
-                                                        // onClick={() => {
-                                                        //     //setId_rol(e.id);
-                                                        //     //setRol(e.rol);
-                                                        //     //setHabilitado(e.habilitado);
-                                                        //     //setUsuario_modificacion(usuario?.usuario);
-                                                        //     //setUpdateModal(true);
-                                                        // }}
-                                                        >Editar Datos</MenuItem>
-                                                        <MenuItem
-                                                        // onClick={() => {
-                                                        //     //setId_rol(e.id);
-                                                        //     //setRol(e.rol);
-                                                        //     //setModalDelete(true);
-                                                        // }}
+                                                            onClick={() => {
+                                                                setId_rol(e.id);
+                                                                setUsername(e.rol);
+                                                                setModalDelete(true);
+                                                            }}
                                                         >Eliminarlo</MenuItem>
                                                     </MenuList>
                                                 </Menu>
-                                        </Table.Cell>
-                                         ) : null}
+                                            </Table.Cell>
+                                        ) : null}
                                     </Table.Row>
                                 ))) :
                                     <Table.Row className="text-center ">

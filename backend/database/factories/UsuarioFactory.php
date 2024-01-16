@@ -22,9 +22,11 @@ class UsuarioFactory extends Factory
      */
     public function definition(): array
     {
+
+        //$persona = Persona::all()->unique()->random();
         return [
 
-            'id_persona' => Persona::all()->random(),
+            'id_persona' => Persona::get("id")->unique()->random(),
             'usuario' => $this->faker->unique()->randomElement([
                 'Roblox67',
                 'Fornite08',
@@ -39,7 +41,7 @@ class UsuarioFactory extends Factory
             'password' => static::$password ??= Hash::make('1234'),
             'remember_token' => Str::random(10),
             'fecha'  => fake()->date(),
-            'id_rol' => Rol::all()->random(),
+            'id_rol' => Rol::get("id")->unique()->random(),
             'habilitado' => 1,
             'fecha_creacion' => now(),
             'usuario_creacion' => fake()->randomElement([
@@ -47,7 +49,6 @@ class UsuarioFactory extends Factory
                 'Fornite08',
                 'Yutu95',
             ]),
-            
         ];
     }
 

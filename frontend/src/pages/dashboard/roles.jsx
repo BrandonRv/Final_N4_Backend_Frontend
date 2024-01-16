@@ -26,16 +26,17 @@ export function Roles() {
     const [respuesta, setRespuesta] = useState("");
     const [id_rol, setId_rol] = useState(null)
     const [rol, setRol] = useState("");
-    const tokenn = Cookies.get("token");
+    const rol_view = parseInt(sessionStorage.getItem("rol"));
+    //const tokenn = Cookies.get("token");
 
     // funcion para nuevo Rol con fetch
     const nuevoRol = async () => {
 
-        const res = await fetch("http://127.0.0.1:8002/api/roles",
+        const res = await fetch("http://127.0.0.1:8000/api/roles",
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${tokenn}`,
+                    Authorization: `Bearer ${Cookies.get("token")}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ rol, habilitado, usuario_creacion, usuario_modificacion }),
@@ -50,7 +51,7 @@ export function Roles() {
     // funcion para editar Rol con fetch
     const eliminarRol = async () => {
 
-        const res = await fetch(`http://127.0.0.1:8002/api/roles/${id_rol}`, { method: "DELETE", headers: { Authorization: `Bearer ${tokenn}`, }, })
+        const res = await fetch(`http://127.0.0.1:8000/api/roles/${id_rol}`, { method: "DELETE", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
         const data = await res.json();
         setRespuesta(data);
         setTimeout(() => {
@@ -61,11 +62,11 @@ export function Roles() {
     // funcion para editar Rol con fetch
     const updateRol = async () => {
 
-        const res = await fetch(`http://127.0.0.1:8002/api/roles/${id_rol}`,
+        const res = await fetch(`http://127.0.0.1:8000/api/roles/${id_rol}`,
             {
                 method: "PUT",
                 headers: {
-                    Authorization: `Bearer ${tokenn}`,
+                    Authorization: `Bearer ${Cookies.get("token")}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ rol, habilitado, usuario_modificacion }),
@@ -83,7 +84,7 @@ export function Roles() {
             <div className="h-16 w-11/12 flex justify-between items-center">
                 <p className="truncate  text-xl md:text-2xl font-medium pr-4"></p><p className="text-center text-green-600 text-sm">{respuesta?.message && <p>{respuesta?.message}</p>}</p>
                 <form>
-                    {usuario.id_rol == 1 ? (
+                    {rol_view == 1 ? (
                         <Button
                             className="mt-6 mr-4"
                             onClick={() => {
@@ -299,7 +300,7 @@ export function Roles() {
                                 <Table.HeadCell>
                                     Usuario de Modificación
                                 </Table.HeadCell>
-                                {usuario.id_rol == 1 ? (
+                                {rol_view == 1 ? (
                                     <Table.HeadCell>
                                         Acciones
                                     </Table.HeadCell>
@@ -329,7 +330,7 @@ export function Roles() {
                                         <Table.Cell>
                                             {e.usuario_modificacion}
                                         </Table.Cell>
-                                        {usuario.id_rol && usuario.id_rol == 1 ? (
+                                        {rol_view && rol_view == 1 ? (
                                             <Table.Cell>
                                                 <Menu placement="left-start">
                                                     <MenuHandler>

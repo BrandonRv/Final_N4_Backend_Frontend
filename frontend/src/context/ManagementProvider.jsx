@@ -23,7 +23,7 @@ export const ManagementProvider = ({ children }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const auth = await fetch("http://127.0.0.1:8002/api/login", {
+            const auth = await fetch("http://127.0.0.1:8000/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", },
                 body: JSON.stringify({ email, password }),
@@ -84,33 +84,32 @@ export const ManagementProvider = ({ children }) => {
 
         const datosDashboard = async () => {
 
-            const roles = await fetch("http://127.0.0.1:8002/api/roles", { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+            const roles = await fetch("http://127.0.0.1:8000/api/roles", { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
             const rols = await roles.json();
             setRoles(rols);
-            const users = await fetch("http://127.0.0.1:8002/api/usuario", { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+            const users = await fetch("http://127.0.0.1:8000/api/usuario", { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
             const usuario = await users.json();
             setUsers(usuario);
-            const bita = await fetch("http://127.0.0.1:8002/api/bitacoras", { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+            const bita = await fetch("http://127.0.0.1:8000/api/bitacoras", { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
             const bitacoras = await bita.json();
             setBitacoras(bitacoras);
-            const pages = await fetch("http://127.0.0.1:8002/api/paginas", { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+            const pages = await fetch("http://127.0.0.1:8000/api/paginas", { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
             const paginas = await pages.json();
             setPaginas(paginas);
-            const id = await fetch(`http://localhost:8002/api/usuario/${parseInt(iduser)}`, { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+            const id = await fetch(`http://localhost:8000/api/usuario/${parseInt(iduser)}`, { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
             const user = await id.json();
             setUsuario(user.usuario);
             setInformacion(user.informacion);
-            const rol = await fetch(`http://127.0.0.1:8002/api/roles/${parseInt(iduser)}`, { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+            const rol = await fetch(`http://127.0.0.1:8000/api/roles/${parseInt(iduser)}`, { method: "GET", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
             const roluser = await rol.json();
             setRol(roluser.rol);
-
         }
 
         datosDashboard();
-        const intervalId = setInterval(datosDashboard, 2000);
+        const intervalId = setInterval(datosDashboard, 5000);
         return () => clearInterval(intervalId);
 
-    }, [iduser, seccion]);
+    }, []);
 
     const contextValue = {
         seccion,
