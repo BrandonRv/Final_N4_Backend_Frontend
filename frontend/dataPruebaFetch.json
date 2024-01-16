@@ -1,0 +1,211 @@
+[
+    {
+      "nombre": "Juan",
+      "apellido": "Perez",
+      "pais": "Argentina",
+      "ciudad": "Buenos Aires",
+      "deporte": "Fútbol",
+      "trabajo": "Programador"
+    },
+    {
+      "nombre": "Maria",
+      "apellido": "Gomez",
+      "pais": "España",
+      "ciudad": "Madrid",
+      "deporte": "Baloncesto",
+      "trabajo": "Diseñador"
+    },
+    {
+      "nombre": "Carlos",
+      "apellido": "Lopez",
+      "pais": "México",
+      "ciudad": "Ciudad de México",
+      "deporte": "Tenis",
+      "trabajo": "Ingeniero"
+    },
+    {
+      "nombre": "Laura",
+      "apellido": "Rodriguez",
+      "pais": "Colombia",
+      "ciudad": "Bogotá",
+      "deporte": "Voleibol",
+      "trabajo": "Contadora"
+    },
+    {
+      "nombre": "Diego",
+      "apellido": "Hernandez",
+      "pais": "Perú",
+      "ciudad": "Lima",
+      "deporte": "Natación",
+      "trabajo": "Abogado"
+    },
+    {
+      "nombre": "Isabel",
+      "apellido": "Martinez",
+      "pais": "Chile",
+      "ciudad": "Santiago",
+      "deporte": "Ciclismo",
+      "trabajo": "Periodista"
+    },
+    {
+      "nombre": "Ricardo",
+      "apellido": "Diaz",
+      "pais": "Uruguay",
+      "ciudad": "Montevideo",
+      "deporte": "Rugby",
+      "trabajo": "Arquitecto"
+    },
+    {
+      "nombre": "Alejandra",
+      "apellido": "Castillo",
+      "pais": "Ecuador",
+      "ciudad": "Quito",
+      "deporte": "Atletismo",
+      "trabajo": "Médico"
+    },
+    {
+      "nombre": "Fernando",
+      "apellido": "Ortega",
+      "pais": "Paraguay",
+      "ciudad": "Asunción",
+      "deporte": "Golf",
+      "trabajo": "Profesor"
+    },
+    {
+      "nombre": "Gabriela",
+      "apellido": "Vega",
+      "pais": "Bolivia",
+      "ciudad": "La Paz",
+      "deporte": "Boxeo",
+      "trabajo": "Psicólogo"
+    },
+    {
+      "nombre": "Oscar",
+      "apellido": "Ramirez",
+      "pais": "Venezuela",
+      "ciudad": "Caracas",
+      "deporte": "Ajedrez",
+      "trabajo": "Investigador"
+    },
+    {
+      "nombre": "Ana",
+      "apellido": "Fuentes",
+      "pais": "Costa Rica",
+      "ciudad": "San José",
+      "deporte": "Hockey",
+      "trabajo": "Empresario"
+    },
+    {
+      "nombre": "Miguel",
+      "apellido": "Fernandez",
+      "pais": "El Salvador",
+      "ciudad": "San Salvador",
+      "deporte": "Esgrima",
+      "trabajo": "Analista"
+    },
+    {
+      "nombre": "Sofia",
+      "apellido": "Moreno",
+      "pais": "Guatemala",
+      "ciudad": "Ciudad de Guatemala",
+      "deporte": "Surf",
+      "trabajo": "Dentista"
+    },
+    {
+      "nombre": "Eduardo",
+      "apellido": "Vargas",
+      "pais": "Nicaragua",
+      "ciudad": "Managua",
+      "deporte": "Motocross",
+      "trabajo": "Chef"
+    },
+    {
+      "nombre": "Luis",
+      "apellido": "Gutierrez",
+      "pais": "Honduras",
+      "ciudad": "Tegucigalpa",
+      "deporte": "Canoa",
+      "trabajo": "Farmacéutico"
+    },
+    {
+      "nombre": "Patricia",
+      "apellido": "Lara",
+      "pais": "Panamá",
+      "ciudad": "Ciudad de Panamá",
+      "deporte": "Tiro con arco",
+      "trabajo": "Marketing"
+    },
+    {
+      "nombre": "Hugo",
+      "apellido": "Cruz",
+      "pais": "República Dominicana",
+      "ciudad": "Santo Domingo",
+      "deporte": "Escalada",
+      "trabajo": "Electricista"
+    },
+    {
+      "nombre": "Monica",
+      "apellido": "Mendoza",
+      "pais": "Puerto Rico",
+      "ciudad": "San Juan",
+      "deporte": "Gimnasia rítmica",
+      "trabajo": "Psiquiatra"
+    },
+    {
+      "nombre": "Daniel",
+      "apellido": "Torres",
+      "pais": "Cuba",
+      "ciudad": "La Habana",
+      "deporte": "Vela",
+      "trabajo": "Piloto"
+    },
+    {
+      "nombre": "Lucia",
+      "apellido": "Reyes",
+      "pais": "Jamaica",
+      "ciudad": "Kingston",
+      "deporte": "Béisbol",
+      "trabajo": "Biólogo"
+    },
+    {
+      "nombre": "Javier",
+      "apellido": "Silva",
+      "pais": "Trinidad y Tobago",
+      "ciudad": "Puerto España",
+      "deporte": "Triatlón",
+      "trabajo": "Geólogo"
+    },
+    {
+      "nombre": "Carmen",
+      "apellido": "Nieves",
+      "pais": "Barbados",
+      "ciudad": "Bridgetown",
+      "deporte": "Taekwondo",
+      "trabajo": "Enfermero"
+    },
+    {
+      "nombre": "Roberto",
+      "apellido": "Salgado",
+      "pais": "Bahamas",
+      "ciudad": "Nassau",
+      "deporte": "Pesca deportiva",
+      "trabajo": "Sociólogo"
+    },
+    {
+      "nombre": "Martha",
+      "apellido": "Jimenez",
+      "pais": "Antigua y Barbuda",
+      "ciudad": "Saint John's",
+      "deporte": "Equitación",
+      "trabajo": "Fisioterapeuta"
+    },
+    {
+      "nombre": "Arturo",
+      "apellido": "Cordova",
+      "pais": "Venezuela",
+      "ciudad": "Rusia",
+      "deporte": "Atletismo",
+      "trabajo": "Chef"
+    }
+]
+  
