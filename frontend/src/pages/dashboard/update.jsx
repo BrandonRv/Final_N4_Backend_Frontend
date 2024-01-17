@@ -14,7 +14,7 @@ export function Update() {
     const [segundo_apellido, setSegundo_apellido] = useState(informacion?.segundo_apellido);
     const [respuesta, setRespuesta] = useState("");
     const tokenn = Cookies.get("token");
-    const id_user = Cookies.get("user");
+    const id_user =  parseInt(Cookies.get("user"));
     const usuario_modificacion = usuario?.usuario;
 
     // funcion para editar Datos Usuario con fetch
