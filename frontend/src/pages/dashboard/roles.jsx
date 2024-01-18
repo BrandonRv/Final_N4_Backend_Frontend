@@ -17,17 +17,18 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 export function Roles() {
 
     const { roles, usuario } = useManagementContext();
-    const [updateModal, setUpdateModal] = useState(0);
+    const [updateModal, setUpdateModal] = useState(false);
     const [newModal, setNewModal] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [habilitado, setHabilitado] = useState(1);
-    const [usuario_modificacion, setUsuario_modificacion] = useState("")
-    const [usuario_creacion, setUsuario_creacion] = useState("")
+    const [usuario_modificacion, setUsuario_modificacion] = useState(usuario?.usuario)
+    const [usuario_creacion, setUsuario_creacion] = useState(usuario?.usuario)
+    const id_user = usuario?.id;
     const [respuesta, setRespuesta] = useState("");
     const [id_rol, setId_rol] = useState(null)
     const [rol, setRol] = useState("");
     const rol_view = parseInt(sessionStorage.getItem("rol"));
-    //const tokenn = Cookies.get("token");
+    const tokenn = Cookies.get("token");
 
     // funcion para nuevo Rol con fetch
     const nuevoRol = async () => {
@@ -36,10 +37,10 @@ export function Roles() {
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${Cookies.get("token")}`,
+                    Authorization: `Bearer ${tokenn}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ rol, habilitado, usuario_creacion, usuario_modificacion }),
+                body: JSON.stringify({ id_user, rol, habilitado, usuario_creacion, usuario_modificacion }),
             })
         const data = await res.json();
         setRespuesta(data);
@@ -48,10 +49,18 @@ export function Roles() {
         }, 2000);
     }
 
-    // funcion para editar Rol con fetch
+    // funcion para eliminar Rol con fetch
     const eliminarRol = async () => {
 
-        const res = await fetch(`http://127.0.0.1:8000/api/roles/${id_rol}`, { method: "DELETE", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+        const res = await fetch(`http://127.0.0.1:8000/api/roles/${id_rol}`, 
+        { 
+            method: "DELETE", 
+            headers: { 
+                Authorization: `Bearer ${Cookies.get("token")}`,
+                "Content-Type": "application/json", 
+            },
+            body: JSON.stringify({ id_user, usuario_modificacion }), 
+        })
         const data = await res.json();
         setRespuesta(data);
         setTimeout(() => {
@@ -69,7 +78,7 @@ export function Roles() {
                     Authorization: `Bearer ${Cookies.get("token")}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ rol, habilitado, usuario_modificacion }),
+                body: JSON.stringify({ id_user, rol, habilitado, usuario_modificacion }),
             })
         const data = await res.json();
         setRespuesta(data);

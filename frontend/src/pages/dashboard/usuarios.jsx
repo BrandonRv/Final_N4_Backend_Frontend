@@ -17,6 +17,7 @@ export function Usuarios() {
 
     const { users, roles, usuario } = useManagementContext(); //users
     const rol = parseInt(sessionStorage.getItem("rol"));
+    const [updateModal, setUpdateModal] = useState(false);
     const [modalDelete, setModalDelete] = useState(false);
     const [newModal, setNewModal] = useState(false);
     const [rolAsign, setRolAsign] = useState("");
@@ -30,12 +31,14 @@ export function Usuarios() {
     const [email, setEmail] = useState("");
     const [respuesta, setRespuesta] = useState("");
     const [username, setUsername] = useState("")
-    //const tokenn = Cookies.get("token");
+    const tokenn = Cookies.get("token");
+    const [id_user, setId_user] = useState(null);
+    const [habilitado, setHabilitado] = useState(null);
 
     // funcion para editar Rol con fetch
     const eliminarUsuario = async () => {
 
-        const res = await fetch(`http://127.0.0.1:8000/api/usuario/${parseInt(id_rol)}`, { method: "DELETE", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
+        const res = await fetch(`http://127.0.0.1:8000/api/usuario/${parseInt(id_user)}`, { method: "DELETE", headers: { Authorization: `Bearer ${Cookies.get("token")}`, }, })
         const data = await res.json();
         setRespuesta(data);
         setTimeout(() => {
@@ -50,7 +53,7 @@ export function Usuarios() {
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${Cookies.get("token")}`,
+                    Authorization: `Bearer ${tokenn}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ usuario: username, email, id_rol, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, usuario_creacion, usuario_modificacion }),
@@ -58,6 +61,24 @@ export function Usuarios() {
         const data = await res.json();
         setRespuesta(data);
         //setRespuesta(data.usuario[0]);
+        setTimeout(() => {
+            setRespuesta('');
+        }, 2000);
+    }
+
+    const updateUsuario = async () => {
+
+        const res = await fetch(`http://127.0.0.1:8000/api/usuario/${parseInt(id_user)}`,
+            {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${tokenn}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ usuario: username, habilitado, usuario_modificacion }),
+            })
+        const data = await res.json();
+        setRespuesta(data);
         setTimeout(() => {
             setRespuesta('');
         }, 2000);
@@ -106,6 +127,65 @@ export function Usuarios() {
                                             >SI</button>
                                         </div>
                                     </form>
+                                </div>
+                            </div>
+                            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                        </>
+                    ) : null}
+                    {updateModal ? (
+                        <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="relative w-auto my-6 mx-auto max-w-sm">
+                                    <div className="border-0 rounded-2xl shadow-lg relative flex flex-col w-full bg-white dark:bg-gray-800 outline-none focus:outline-none">
+                                        <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200  text-gray-400 bg-transparent dark:hover:bg-gray-600 dark:hover:text-white">
+                                            <h3 className="text-3xl font-semibold">
+                                                Activa o Desactiva un Usuario
+                                            </h3>
+                                            <button
+                                                className="p-1 ml-auto bg-transparent border-0 mt-1 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                                onClick={() => setUpdateModal(false)}
+                                            >
+                                                <svg className="w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div className="relative p-6 flex flex-col gap-6">
+                                            <p className="text-gray-900 dark:text-gray-300">NOTA: Si Desactivas un usuario no podra Loguearse</p>
+                                            <div className="flex gap-4 ">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Estado del Usuario :</span>
+                                                <Switch
+                                                    label={habilitado === 0 ? "Inactivo" : "Activo"}
+                                                    defaultChecked={habilitado === 1 ? true : false}
+                                                    onChange={(e) => setHabilitado(e.target.checked ? 1 : 0)}
+                                                    labelProps={{
+                                                        className: `text-sm font-normal ${habilitado === 1 ? 'text-green-500' : 'text-red-500'}`,
+                                                    }}
+                                                    className="text-sm font-normal text-green-500"
+                                                />
+                                            </div>
+                                        </div>
+                                        <p className="text-center mt-4 text-green-600 text-sm">{respuesta?.message && <p>{respuesta?.rolname + " " + respuesta?.message}</p>}</p>
+                                        <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                                            <button
+                                                className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                                type="button"
+                                                onClick={() => setUpdateModal(false)}
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <Button
+                                                className="bg-emerald-500 dark:bg-gray-500 text-gray-900 dark:text-gray-200 active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                                type="submit"
+                                                onClick={() => {
+                                                    updateUsuario();
+                                                    setUpdateModal(false)
+                                                }}
+                                            >
+                                                Guardar
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
@@ -207,6 +287,7 @@ export function Usuarios() {
                                                     <option>DEJAR SIN ROL</option>
                                                 </select>
                                             </div>
+                                            <p className="text-gray-900 dark:text-gray-300">NOTA: Todos los nuevos usuarios registrado tendran una Contraseña por defecto esta sera: 1234</p>
                                         </div>
                                     </div>
                                     <p className="text-center mt-4 text-green-600 text-sm">{respuesta?.message && <p>{respuesta?.rolname + " " + respuesta?.message}</p>}</p>
@@ -341,8 +422,16 @@ export function Usuarios() {
                                                     <MenuList className="dark:bg-gray-800">
                                                         <MenuItem
                                                             onClick={() => {
-                                                                setId_rol(e.id);
-                                                                setUsername(e.rol);
+                                                                setId_user(e.id);
+                                                                setUsername(e.usuario);
+                                                                setHabilitado(e.habilitado);
+                                                                setUpdateModal(true);
+                                                            }}
+                                                        >Editar Datos</MenuItem>
+                                                        <MenuItem
+                                                            onClick={() => {
+                                                                setId_user(e.id);
+                                                                setUsername(e.usuario);
                                                                 setModalDelete(true);
                                                             }}
                                                         >Eliminarlo</MenuItem>

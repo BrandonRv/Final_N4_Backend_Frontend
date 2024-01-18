@@ -1,14 +1,222 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+    Button,
+    Switch,
+    IconButton,
+    Menu,
+    MenuList,
+    MenuItem,
+    MenuHandler
+} from "@material-tailwind/react";
 import { Table } from "flowbite-react";
 import { useManagementContext } from "../../context/ManagementProvider";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import Cookies from "js-cookie";
 
 export function Paginas() {
 
-    const { paginas } = useManagementContext();
+    const { paginas, usuario } = useManagementContext();
+    const [newModal, setNewModal] = useState(false);
+    const [modalDelete, setModalDelete] = useState(false);
+    const [uRL, setURL] = useState("");
+    const [nombreurl, setNombreurl] = useState("");
+    const [tipo, setTipo] = useState("");
+    const [estado, setEstado] = useState(0);
+    const [descripcion, setDescripcion] = useState("")
+    const [respuesta, setRespuesta] = useState("");
+    const usuario_creacion = usuario?.usuario;
+    const rol_view = parseInt(sessionStorage.getItem("rol"));
+    const tokenn = Cookies.get("token");
+    const id_user = usuario?.id;
+    const [id_url, setId_url] = useState(null);
+
+    // funcion para agregar nueva url con fetch
+    const nuevaURL = async () => {
+
+        const res = await fetch(`http://127.0.0.1:8000/api/paginas/${parseInt(id_user)}`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${tokenn}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ url: uRL, estado, nombre: nombreurl, descripcion, tipo, usuario_creacion }),
+            })
+        const data = await res.json();
+        setRespuesta(data);
+        setTimeout(() => {
+            setRespuesta('');
+        }, 2000);
+    }
+
+    // funcion para eliminar URL con fetch
+    const eliminarURL = async () => {
+
+        const res = await fetch(`http://127.0.0.1:8000/api/paginas/${id_url}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${tokenn}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id_user, usuario_creacion }),
+            })
+        const data = await res.json();
+        setRespuesta(data);
+        setTimeout(() => {
+            setRespuesta('');
+        }, 2000);
+    }
 
     return (
         <>
+            <div className="h-16 w-11/12 flex justify-between items-center">
+                <p className="truncate  text-xl md:text-2xl font-medium pr-4"></p><p className="text-center text-green-600 text-sm">{respuesta?.message && <p>{respuesta?.message}</p>}</p>
+                <form>
+                    {rol_view == 1 ? (
+                        <Button
+                            className="mt-6 mr-4"
+                            onClick={() => {
+                                //setUsuario_creacion(usuario?.usuario);
+                                //setUsuario_modificacion(usuario?.usuario);
+                                setNewModal(true);
+                            }}
+                        >
+                            Agregar Nueva Url.
+                        </Button>
+                    ) : null}
+                    {modalDelete ? (
+                        <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="relative w-full max-w-lg max-h-full bg-white rounded-lg shadow dark:bg-gray-700 pb-6 pt-4 lg:pb-6 lg:pt-4 ">
+                                    <button type="button" onClick={() => setModalDelete(false)} className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                        </svg>
+                                    </button>
+                                    <h3 id="titutlo" className="pb-2 mb-4 border-b-2 text-xl font-medium text-gray-900 dark:text-white px-6 lg:px-8">Confirme su Eliminación</h3>
+                                    <form className="space-y-6 relative px-6 lg:px-8">
+                                        <label className="block text-lg font-medium text-gray-900 dark:text-white">
+                                            ¿Está seguro de que desea Eliminar la Pagina: {uRL}<span className="font-extrabold"> </span>?
+                                        </label>
+                                        <div id="btn_modal" className="flex justify-end gap-2 mt-4">
+                                            <button
+                                                type="button"
+                                                className="w-fit text-white bg-gray-600 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                                                onClick={() => setModalDelete(false)}
+                                            >NO</button>
+                                            <button
+                                                type="button"
+                                                className="w-fit text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                                                onClick={() => {
+                                                    eliminarURL();
+                                                    setModalDelete(false);
+                                                }}
+                                            >SI</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                        </>
+                    ) : null}
+                    {newModal ? (
+                        <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="relative w-auto my-6 mx-auto bg-white dark:bg-gray-800 max-w-sm border-0 rounded-2xl shadow-lg">
+                                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full outline-none focus:outline-none">
+                                        <div className="flex items-start justify-between text-gray-400 bg-transparent p-5 border-b border-solid border-slate-200 rounded-t">
+                                            <h3 className="text-3xl font-semibold">
+                                                Agrega Nueva URL
+                                            </h3>
+                                            <button
+                                                className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                                onClick={() => setNewModal(false)}
+                                            >
+                                                <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+                                                    ×
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div className="relative p-6 flex flex-col gap-6">
+
+                                            <div className="flex items-center justify-between">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">URL :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={uRL}
+                                                    onChange={(e) => setURL(e.target.value)}
+                                                    required />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Nombre :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={nombreurl}
+                                                    onChange={(e) => setNombreurl(e.target.value)}
+                                                    required />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Tipo :</span>
+                                                <input
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={tipo}
+                                                    onChange={(e) => setTipo(e.target.value)}
+                                                    required />
+                                            </div>
+                                            <div className="flex gap-4 ">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Estado del URL :</span>
+                                                <Switch
+                                                    label={estado === 0 ? "Inactiva" : "Activa"}
+                                                    defaultChecked={estado === 1 ? true : false}
+                                                    onChange={(e) => setEstado(e.target.checked ? 1 : 0)}
+                                                    labelProps={{
+                                                        className: `text-sm font-normal ${estado === 1 ? 'text-green-500' : 'text-red-500'}`,
+                                                    }}
+                                                    className="text-sm font-normal text-green-500"
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="mr-4 text-sm font-medium text-gray-900 dark:text-gray-300">Descripción :</span>
+                                                <textarea
+                                                    className="border-0 md:border dark:text-gray-300 dark:bg-gray-800 rounded-2xl"
+                                                    type="text"
+                                                    defaultValue={descripcion}
+                                                    onChange={(e) => setDescripcion(e.target.value)}
+                                                    required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p className="text-center mt-4 text-green-600 text-sm">{respuesta?.message && <p>{respuesta?.rolname + " " + respuesta?.message}</p>}</p>
+                                    <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                                        <button
+                                            className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            type="button"
+                                            onClick={() => setNewModal(false)}
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <Button
+                                            className="bg-emerald-500 dark:bg-gray-500 text-gray-900 dark:text-gray-200 active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            type="submit"
+                                            onClick={() => {
+                                                nuevaURL();
+                                                setNewModal(false)
+                                            }}
+                                        >
+                                            Agregar
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                        </>
+                    ) : null}
+                </form>
+            </div>
             <section className=" h-[90%] flex w-11/12 justify-start items-start">
                 <div className=" w-full h-full p-4">
                     <div className="relative h-full  overflow-auto shadow-md sm:rounded-lg">
@@ -41,6 +249,11 @@ export function Paginas() {
                                 <Table.HeadCell>
                                     Usuario de Ult. Modificación
                                 </Table.HeadCell>
+                                {rol_view == 1 ? (
+                                    <Table.HeadCell>
+                                        Acciones
+                                    </Table.HeadCell>
+                                ) : null}
                             </Table.Head>
                             <Table.Body className="divide-y">
                                 {paginas ? (paginas.map((e, index) => (
@@ -75,6 +288,29 @@ export function Paginas() {
                                         <Table.Cell>
                                             {e.usuario_modificacion}
                                         </Table.Cell>
+                                        {rol_view && rol_view == 1 ? (
+                                            <Table.Cell>
+                                                <Menu placement="left-start">
+                                                    <MenuHandler>
+                                                        <IconButton size="sm" variant="text" color="blue-gray">
+                                                            <EllipsisVerticalIcon
+                                                                strokeWidth={3}
+                                                                fill="currenColor"
+                                                                className="h-6 w-6"
+                                                            />
+                                                        </IconButton>
+                                                    </MenuHandler>
+                                                    <MenuList className="dark:bg-gray-800">
+                                                        <MenuItem
+                                                            onClick={() => {
+                                                                setId_url(e.id);
+                                                                setURL(e.nombre);
+                                                                setModalDelete(true);
+                                                            }}
+                                                        >Eliminarlo</MenuItem>
+                                                    </MenuList>
+                                                </Menu>
+                                            </Table.Cell>) : null}
                                     </Table.Row>
                                 ))) :
                                     <Table.Row className="flex text-center items-center justify-center">

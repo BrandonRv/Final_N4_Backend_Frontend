@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bitacora;
 use App\Models\Enlace;
 use App\Models\Rol;
 use App\Models\Usuario;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,9 +34,11 @@ class RolController extends Controller
      */
     public function store(Request $request)
     {
+        try {
         $validator = Validator::make($request->all(), [
             'rol' => 'required|string|unique:rols',
             'habilitado' => 'integer',
+            'id_user' => 'integer',
             'usuario_creacion' => 'required|string',
             'usuario_modificacion' => 'required|string',
         ]);
@@ -52,9 +57,17 @@ class RolController extends Controller
                 $rol->usuario_creacion = $request['usuario_creacion'];
                 $rol->usuario_modificacion = $request['usuario_modificacion'];
                 $rol->save();
+
+                $iduser = $request['id_user'];
+                $bitacora = 'Se Registro un nuevo Rol: ' . $request['rol'] . '.';
+                $usuarioname =  $request['usuario_creacion'];
+                Bitacora::crearBitacora($iduser, $bitacora, $usuarioname);
+
                 return response()->json([
                     'message' => 'Rol registrado correctamente',
                     'rolname' => $rol->rol,
+                    '$bitacora' => $iduser . ' ' . $bitacora,
+                    'usuario' => $usuarioname
                 ], 201);
             } else {
                 return response()->json([
@@ -66,7 +79,14 @@ class RolController extends Controller
                 'message' => "Es nesesario llenar los Campos: rol y estado debe tener valores correcto."
             ], 400);
         }
+    } catch (Exception $e) {
+        return response()->json([
+            'message' => $e->getMessage()
+        ]);
     }
+
+    }
+
 
     /**
      * Display the specified resource.
@@ -97,6 +117,7 @@ class RolController extends Controller
         $validator = Validator::make($request->all(), [
             'rol' => 'required|string',
             'habilitado' => 'integer',
+            'id_user' => 'integer',
             'usuario_modificacion' => 'required|string',
         ]);
 
@@ -115,6 +136,12 @@ class RolController extends Controller
                 $rol->fecha_modificacion = now();
                 $rol->usuario_modificacion = $request['usuario_modificacion'];
                 $rol->save();
+
+                $iduser = $request['id_user'];
+                $bitacora = 'Se Actualizo el Rol: ' . $request['rol'] . '.';
+                $usuarioname =  $request['usuario_modificacion'];
+                Bitacora::crearBitacora($iduser, $bitacora, $usuarioname);
+
                 return response()->json([
                     'message' => 'El Rol se ha Actualizado correctamente',
                     'rol_actualizado' => $rol->rol,
@@ -134,7 +161,7 @@ class RolController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $rol_delete = Rol::find($id);
         if (Rol::where('id', $id)->exists() === false) {
@@ -145,6 +172,12 @@ class RolController extends Controller
             Usuario::where('id_rol', $id)->update(['id_rol' => null]);
             Enlace::where('id_rol', $id)->update(['id_rol' => null]);
             $rol_delete->delete();
+
+            $iduser = $request['id_user'];
+            $bitacora = 'Se Elimino el Rol: ' . $rol_delete->rol . '.';
+            $usuarioname =  $request['usuario_modificacion'];
+            Bitacora::crearBitacora($iduser, $bitacora, $usuarioname);
+
             return response()->json([
                 'message' => 'El Rol N° ' . $id . ' ha sido eliminado Correctamente.'
             ], 200);

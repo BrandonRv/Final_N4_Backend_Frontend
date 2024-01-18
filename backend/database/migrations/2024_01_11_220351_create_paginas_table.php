@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('paginas', function (Blueprint $table) {
             $table->id();
             $table->string('url');
-            $table->string('estado');
+            $table->tinyInteger('estado')->default(1); //tinyInteger('habilitado')->default(1);
             $table->string('nombre');
             $table->string('descripcion');
-            $table->string('icono');
+            $table->string('icono')->nullable();
             $table->string('tipo');
             $table->date('fecha_creacion');
             $table->date('fecha_modificacion')->nullable();

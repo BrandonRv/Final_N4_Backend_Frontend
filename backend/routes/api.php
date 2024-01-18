@@ -57,6 +57,7 @@ Route::delete('/roles/{id}', [RolController::class, 'destroy']);
 
 Route::get('/usuario', [UsuarioController::class, 'index']);
 Route::get('/usuario/{id}', [UsuarioController::class, 'show']);
+Route::put('/usuario/{id}', [UsuarioController::class, 'update']);
 Route::delete('/usuario/{id}', [UsuarioController::class, 'destroy']);
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -64,12 +65,15 @@ Route::delete('/usuario/{id}', [UsuarioController::class, 'destroy']);
 ///////////////////////////////////////////////////////////////////////////////////////
 
 Route::get('/bitacoras', [BitacoraController::class, 'index']);
+Route::delete('/bitacoras/{id}', [BitacoraController::class, 'destroy']);
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //-------------------------------- Rutas Paginas ------------------------------------//
 ///////////////////////////////////////////////////////////////////////////////////////
 
 Route::get('/paginas', [PaginaController::class, 'index']);
+Route::post('/paginas/{id}', [PaginaController::class, 'store']);
+Route::delete('/paginas/{id}', [PaginaController::class, 'destroy']);
 
 });
 

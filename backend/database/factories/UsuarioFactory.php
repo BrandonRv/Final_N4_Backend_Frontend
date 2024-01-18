@@ -41,7 +41,7 @@ class UsuarioFactory extends Factory
             'password' => static::$password ??= Hash::make('1234'),
             'remember_token' => Str::random(10),
             'fecha'  => fake()->date(),
-            'id_rol' => Rol::get("id")->unique()->random(),
+            'id_rol' => 1,
             'habilitado' => 1,
             'fecha_creacion' => now(),
             'usuario_creacion' => fake()->randomElement([

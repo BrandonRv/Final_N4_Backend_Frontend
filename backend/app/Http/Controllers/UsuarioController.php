@@ -6,6 +6,7 @@ use App\Models\Bitacora;
 use App\Models\Persona;
 use App\Models\Rol;
 use App\Models\Usuario;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -84,9 +85,49 @@ class UsuarioController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Usuario $usuario)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'usuario' => 'required|string',
+            'habilitado' => 'integer',
+            'usuario_modificacion' => 'required|string',
+        ]);
+
+        if (Usuario::where('id', $id)->exists() === false) {
+            return response()->json([
+                'message' => 'No existe un Usuario: ' . $request['usuario'] . ' o fue eliminado.',
+            ], 404);
+        } else if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        } else if ($request['usuario'] && $request['usuario_modificacion']) {
+
+            if ($request['habilitado'] == 1 || $request['habilitado'] == 0) {
+                $usuario = Usuario::find($id);
+                $usuario->usuario = $request['usuario'];
+                $usuario->habilitado = $request['habilitado'];
+                $usuario->fecha_modificacion = now();
+                $usuario->usuario_modificacion = $request['usuario_modificacion'];
+                $usuario->save();
+
+                $iduser = $id;
+                $bitacora = "Se Actualizo el 'ESTADO' del Usuario: " . $request['usuario'];
+                $usuarioname =  $request['usuario_modificacion'];
+                Bitacora::crearBitacora($iduser, $bitacora, $usuarioname);
+
+                return response()->json([
+                    'message' => 'El Usuario ' . $request['usuario'] . ' se ha Actualizado correctamente',
+                    'user_actualizado' => $request['usuario'],
+                ], 201);
+            } else {
+                return response()->json([
+                    'message' => "'Estado' solo acepta los valores 0 ó 1. Inserte los valores correcto."
+                ], 400);
+            }
+        } else {
+            return response()->json([
+                'message' => "Es nesesario los Valores: del Switch de estado."
+            ], 400);
+        }
     }
 
     /**

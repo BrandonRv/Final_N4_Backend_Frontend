@@ -58,8 +58,23 @@ class BitacoraController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Bitacora $bitacora)
+    public function destroy(Request $request, $id)
     {
-        //
+        $bitacora_delete = Bitacora::find($id);
+        if (Bitacora::where('id', $id)->exists() === false) {
+            return response()->json([
+                'message' => 'No existe una bitacora con el id N° ' . $id,
+            ], 404);
+        } else {
+            $bitacora_delete->delete();
+            $iduser = $request['id_user'];
+            $bitacora = 'Se Elimino la Bitacora: ' . $bitacora_delete->bitacora . '.';
+            $usuarioname =  $request['usuario_modificacion'];
+            Bitacora::crearBitacora($iduser, $bitacora, $usuarioname);
+
+            return response()->json([
+                'message' => 'La Bitacora: ' . $bitacora_delete->bitacora . ' ha sido eliminada Correctamente.'
+            ], 200);
+        }
     }
 }

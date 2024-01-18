@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('enlaces', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_pagina');
+            $table->unsignedBigInteger('id_pagina')->nullable();
             $table->foreign('id_pagina')->references('id')->on('paginas');
             $table->unsignedBigInteger('id_rol')->nullable();
             $table->foreign('id_rol')->references('id')->on('rols');
